@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="te">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Lekka · లెక్క</title>
+  <meta name="description" content="Money book for works, sub-works and people. Paid and received, by voice or touch.">
+  <meta name="theme-color" content="#1E2B6F">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anek+Telugu:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+      <symbol id="i-back" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></symbol>
+      <symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/></symbol>
+      <symbol id="i-camera" viewBox="0 0 24 24"><path d="M4 8h3l1.6-2.4h6.8L17 8h3v11H4z"/><circle cx="12" cy="13" r="3.4"/></symbol>
+      <symbol id="i-works" viewBox="0 0 24 24"><path d="M5 4h11l3 3v13H5z"/><path d="M8.5 10h7M8.5 13.5h7M8.5 17h4"/></symbol>
+      <symbol id="i-people" viewBox="0 0 24 24"><circle cx="9" cy="8.5" r="3.2"/><path d="M3.5 19.5c.6-3.3 2.7-5 5.5-5s4.9 1.7 5.5 5"/><circle cx="16.8" cy="9.5" r="2.5"/><path d="M15.8 14.6c2.5-.3 4.3 1.3 4.8 4.4"/></symbol>
+      <symbol id="i-settings" viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></symbol>
+      <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4.5 7h15M9.5 7V4.5h5V7M6.5 7l1 13h9l1-13M10.5 11v5.5M13.5 11v5.5"/></symbol>
+      <symbol id="i-edit" viewBox="0 0 24 24"><path d="M5 19l1-4L16 5l3 3L9 18z"/><path d="M14 7l3 3"/></symbol>
+      <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19.5h14"/></symbol>
+      <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 15.5V4.5M7.5 9L12 4.5 16.5 9M5 19.5h14"/></symbol>
+      <symbol id="i-in" viewBox="0 0 24 24"><path d="M17 7L7 17M7 9v8h8"/></symbol>
+      <symbol id="i-out" viewBox="0 0 24 24"><path d="M7 17L17 7M9 7h8v8"/></symbol>
+      <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+      <symbol id="i-chevron" viewBox="0 0 24 24"><path d="M9.5 5.5L16 12l-6.5 6.5"/></symbol>
+    </defs>
+  </svg>
+
+  <div id="app" class="app"></div>
+
+  <nav class="tabbar" aria-label="Main">
+    <a href="#/" data-tab="works"><svg class="ic"><use href="#i-works"/></svg><span data-t="works"></span></a>
+    <a href="#/people" data-tab="people"><svg class="ic"><use href="#i-people"/></svg><span data-t="people"></span></a>
+    <a href="#/settings" data-tab="settings"><svg class="ic"><use href="#i-settings"/></svg><span data-t="settings"></span></a>
+  </nav>
+
+  <button class="fab" id="fab" type="button"><svg class="ic"><use href="#i-plus"/></svg><span data-t="addEntry"></span></button>
+
+  <!-- Entry sheet -->
+  <dialog id="entrySheet" class="sheet" aria-labelledby="entryTitle">
+    <form method="dialog" id="entryForm" class="sheet-body slip slip--book" novalidate>
+      <header class="sheet-head">
+        <button type="button" class="icon-btn" data-close aria-label="Close"><svg class="ic"><use href="#i-close"/></svg></button>
+        <h2 id="entryTitle"></h2>
+        <span class="slip-no" id="entryNo"></span>
+      </header>
+
+      <div class="voice">
+        <button type="button" class="mic" id="micBtn"><svg class="ic"><use href="#i-mic"/></svg><span id="micLabel"></span></button>
+        <p class="heard" id="heard" aria-live="polite"></p>
+      </div>
+
+      <fieldset class="type-switch">
+        <legend class="sr-only" data-t="type"></legend>
+        <label class="type-opt type-opt--paid"><input type="radio" name="type" value="paid" checked><span><svg class="ic"><use href="#i-out"/></svg><b data-t="paid"></b></span></label>
+        <label class="type-opt type-opt--received"><input type="radio" name="type" value="received"><span><svg class="ic"><use href="#i-in"/></svg><b data-t="received"></b></span></label>
+      </fieldset>
+
+      <label class="field field--amount">
+        <span data-t="amount"></span>
+        <span class="amount-wrap"><span class="rupee">₹</span><input name="amount" id="amountInput" inputmode="decimal" autocomplete="off" required></span>
+      </label>
+
+      <label class="field">
+        <span data-t="name"></span>
+        <input name="person" list="peopleList" autocomplete="off" id="personInput">
+        <datalist id="peopleList"></datalist>
+      </label>
+
+      <div class="row2">
+        <label class="field">
+          <span data-t="work"></span>
+          <select name="workId" id="workSelect" required></select>
+        </label>
+        <label class="field">
+          <span data-t="subWork"></span>
+          <select name="subId" id="subSelect"></select>
+        </label>
+      </div>
+
+      <div class="row2">
+        <label class="field">
+          <span data-t="date"></span>
+          <input type="date" name="date" required>
+        </label>
+        <div class="field">
+          <span data-t="photo"></span>
+          <label class="photo-pick" id="photoPick">
+            <input type="file" accept="image/*" capture="environment" id="photoInput" class="sr-only">
+            <img id="photoPreview" alt="" hidden>
+            <span class="photo-empty"><svg class="ic"><use href="#i-camera"/></svg><span data-t="addPhoto"></span></span>
+          </label>
+          <button type="button" class="link-btn" id="photoRemove" hidden data-t="removePhoto"></button>
+        </div>
+      </div>
+
+      <label class="field">
+        <span data-t="note"></span>
+        <input name="note" autocomplete="off">
+      </label>
+
+      <p class="form-error" id="entryError" role="alert"></p>
+
+      <footer class="sheet-foot">
+        <button type="button" class="btn btn--danger-ghost" id="entryDelete" hidden><svg class="ic"><use href="#i-trash"/></svg><span data-t="delete"></span></button>
+        <button type="submit" class="btn btn--primary" id="entrySave" data-t="save"></button>
+      </footer>
+    </form>
+  </dialog>
+
+  <!-- Small text prompt -->
+  <dialog id="askSheet" class="sheet sheet--small">
+    <form method="dialog" class="sheet-body" id="askForm">
+      <h2 id="askTitle"></h2>
+      <label class="field"><span id="askLabel"></span><input id="askInput" autocomplete="off" required></label>
+      <footer class="sheet-foot">
+        <button type="button" class="btn btn--ghost" data-close data-t="cancel"></button>
+        <button type="submit" class="btn btn--primary" data-t="save"></button>
+      </footer>
+    </form>
+  </dialog>
+
+  <!-- Confirm -->
+  <dialog id="confirmSheet" class="sheet sheet--small">
+    <form method="dialog" class="sheet-body">
+      <h2 id="confirmTitle"></h2>
+      <p id="confirmText" class="muted"></p>
+      <footer class="sheet-foot">
+        <button value="no" class="btn btn--ghost" data-t="cancel"></button>
+        <button value="yes" class="btn btn--danger" id="confirmYes"></button>
+      </footer>
+    </form>
+  </dialog>
+
+  <!-- Photo viewer -->
+  <dialog id="photoSheet" class="photo-view">
+    <form method="dialog"><button class="icon-btn icon-btn--light" aria-label="Close"><svg class="ic"><use href="#i-close"/></svg></button></form>
+    <img id="photoFull" alt="">
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
